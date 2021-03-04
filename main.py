@@ -3,6 +3,8 @@ import json
 import tkinter as tk
 
 folder_dict = {}
+input_folder_name = ""
+input_dest_folder = ""
 
 # parses input file and outputs a json object of folder names corresponding to the elements inside
 
@@ -72,23 +74,56 @@ def popup():
     print("hi")
 
 
-print(parse("names.csv"))
-m = tk.Tk()
-scrollbar = tk.Scrollbar(m)
-scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-folder_list = tk.Listbox(m, selectmod=tk.SINGLE,
-                         width=32, yscrollcommand=scrollbar.set)
-for folder_name in folder_dict:
-    folder_list.insert(tk.END, folder_name)
-    for file_name in folder_dict[folder_name]:
-        folder_list.insert(tk.END, "\t> " + file_name)
-folder_list.pack(side=tk.LEFT, fill=tk.BOTH)
-scrollbar.config(command=folder_list.yview)
-mb = tk.Menubutton(m, text="Options")
-mb.pack()
-mb.menu = tk.Menu(mb, tearoff=0)
-mb["menu"] = mb.menu
-mb.menu.add_command(label="Create New Folder", command=popup)
-mb.menu.add_command(label="Move Selected File", command=popup)
-mb.pack()
-m.mainloop()
+class createFolderWindow(object):
+    def __init__(self, master):
+        w = self.top = tk.Toplevel(master)
+        self.t = tk.Label(w, text="New Folder Name:")
+        self.t.pack(side=tk.LEFT)
+        self.b = tk.Button(w, text="Add", command=self.cleanup)
+        self.b.pack(side=tk.RIGHT)
+        self.e = tk.Entry(w)
+        self.e.pack(side=tk.RIGHT)
+
+    def cleanup(self):
+        self.value = self.e.get()
+        create_folder(self.value)
+        self.top.destroy()
+
+
+class mainWindow(object):
+    def __init__(self, master):
+        m = self.m = master
+        self.scrollbar = tk.Scrollbar(m)
+        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.folder_list = tk.Listbox(
+            m, selectmode=tk.SINGLE, width=32, yscrollcommand=self.scrollbar.set)
+        for folder_name in folder_dict:
+            self.folder_list.insert(tk.END, folder_name)
+            for file_name in folder_dict[folder_name]:
+                self.folder_list.insert(tk.END, "\t> " + file_name)
+        self.folder_list.pack(side=tk.LEFT, fill=tk.BOTH)
+        self.scrollbar.config(command=self.folder_list.yview)
+        self.mb = tk.Menubutton(m, text="Options")
+        self.mb.pack()
+        self.mb.menu = tk.Menu(self.mb, tearoff=0)
+        self.mb["menu"] = self.mb.menu
+        self.mb.menu.add_command(label="Create New Folder",
+                                 command=self.create_new_folder)
+        self.mb.menu.add_command(label="Move Selected File", command=popup)
+        self.mb.pack()
+
+    def create_new_folder(self):
+        self.w = createFolderWindow(self.m)
+        self.mb.wait_window(self.w.top)
+        self.folder_list.delete(0, self.folder_list.size()-1)
+        for folder_name in folder_dict:
+            self.folder_list.insert(tk.END, folder_name)
+            for file_name in folder_dict[folder_name]:
+                self.folder_list.insert(tk.END, "\t> " + file_name)
+
+
+if __name__ == "__main__":
+    print(parse("names.csv"))
+    root = tk.Tk()
+    m = mainWindow(root)
+    root.mainloop()
