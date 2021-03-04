@@ -35,11 +35,13 @@ def parse(file_name, delimiter='_'):
 
 def group_folders(folders):
     folder_names = []
-    for name in folders:
+    for j in range(len(folders)):
+        name = folders[j]
         max_folder_name = []
         for i in range(len(name)):
-            for other_name in folders:
-                if other_name == name:
+            for k in range(len(folders)):
+                other_name = folders[k]
+                if j == k:
                     continue
                 if len(other_name) > i and name[:i+1] == other_name[:i+1]:
                     max_folder_name = name[:i+1]
@@ -48,6 +50,19 @@ def group_folders(folders):
             folder_names.append(name)
         else:
             folder_names.append(max_folder_name)
+    # for name in folders:
+    #     max_folder_name = []
+    #     for i in range(len(name)):
+    #         for other_name in folders:
+    #             if other_name == name:
+    #                 continue
+    #             if len(other_name) > i and name[:i+1] == other_name[:i+1]:
+    #                 max_folder_name = name[:i+1]
+    #                 break
+    #     if not max_folder_name:
+    #         folder_names.append(name)
+    #     else:
+    #         folder_names.append(max_folder_name)
     return folder_names
 
 
