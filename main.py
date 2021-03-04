@@ -3,8 +3,6 @@ import json
 import tkinter as tk
 
 folder_dict = {}
-input_folder_name = ""
-input_dest_folder = ""
 
 # parses input file and outputs a json object of folder names corresponding to the elements inside
 
@@ -90,6 +88,24 @@ class createFolderWindow(object):
         self.top.destroy()
 
 
+class createFileWindow(object):
+    def __init__(self, master, init_folder, file_name):
+        w = self.top = tk.Toplevel(master)
+        self.t = tk.Label(w, text="Destination Folder Name:")
+        self.t.pack(side=tk.LEFT)
+        self.b = tk.Button(w, text="Move", command=self.cleanup)
+        self.b.pack(side=tk.RIGHT)
+        self.e = tk.Entry(w)
+        self.e.pack(side=tk.RIGHT)
+        self.init_folder = init_folder
+        self.file_name = file_name
+
+    def cleanup(self):
+        self.value = self.e.get()
+        move_file(self.init_folder, self.value, self.file_name)
+        self.top.destroy()
+
+
 class mainWindow(object):
     def __init__(self, master):
         m = self.m = master
@@ -100,7 +116,7 @@ class mainWindow(object):
         for folder_name in folder_dict:
             self.folder_list.insert(tk.END, folder_name)
             for file_name in folder_dict[folder_name]:
-                self.folder_list.insert(tk.END, "\t> " + file_name)
+                self.folder_list.insert(tk.END, "    > " + file_name)
         self.folder_list.pack(side=tk.LEFT, fill=tk.BOTH)
         self.scrollbar.config(command=self.folder_list.yview)
         self.mb = tk.Menubutton(m, text="Options")
@@ -109,7 +125,8 @@ class mainWindow(object):
         self.mb["menu"] = self.mb.menu
         self.mb.menu.add_command(label="Create New Folder",
                                  command=self.create_new_folder)
-        self.mb.menu.add_command(label="Move Selected File", command=popup)
+        self.mb.menu.add_command(
+            label="Move Selected File", command=self.move_file)
         self.mb.pack()
 
     def create_new_folder(self):
@@ -119,7 +136,43 @@ class mainWindow(object):
         for folder_name in folder_dict:
             self.folder_list.insert(tk.END, folder_name)
             for file_name in folder_dict[folder_name]:
-                self.folder_list.insert(tk.END, "\t> " + file_name)
+                self.folder_list.insert(tk.END, "    > " + file_name)
+
+    def move_file(self):
+        selected = self.folder_list.curselection()
+        print(selected)
+        if not selected:
+            return
+        index = 0
+        init_folder = ""
+        file_name1 = ""
+        is_file = False
+        global folder_dict
+        print(folder_dict)
+        for folder_name in folder_dict:
+            if index == selected[0]:
+                print("folder not a file")
+                break
+            index += 1
+            print(index)
+            for file_name in folder_dict[folder_name]:
+                if index == selected[0]:
+                    is_file = True
+                    init_folder = folder_name
+                    file_name1 = file_name
+                    break
+                index += 1
+                print(index)
+            if is_file:
+                break
+        if is_file:
+            self.w = createFileWindow(self.m, init_folder, file_name1)
+            self.mb.wait_window(self.w.top)
+            self.folder_list.delete(0, self.folder_list.size()-1)
+            for folder_name in folder_dict:
+                self.folder_list.insert(tk.END, folder_name)
+                for file_name in folder_dict[folder_name]:
+                    self.folder_list.insert(tk.END, "\t> " + file_name)
 
 
 if __name__ == "__main__":
