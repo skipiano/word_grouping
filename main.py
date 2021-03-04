@@ -50,20 +50,9 @@ def group_folders(folders):
             folder_names.append(name)
         else:
             folder_names.append(max_folder_name)
-    # for name in folders:
-    #     max_folder_name = []
-    #     for i in range(len(name)):
-    #         for other_name in folders:
-    #             if other_name == name:
-    #                 continue
-    #             if len(other_name) > i and name[:i+1] == other_name[:i+1]:
-    #                 max_folder_name = name[:i+1]
-    #                 break
-    #     if not max_folder_name:
-    #         folder_names.append(name)
-    #     else:
-    #         folder_names.append(max_folder_name)
     return folder_names
+
+# will create new folder at the bottom of the list
 
 
 def create_folder(folder_name):
@@ -72,6 +61,8 @@ def create_folder(folder_name):
         print("A folder with that name already exists: please try a different name.")
     else:
         folder_dict[folder_name] = []
+
+# will add file at the bottom of the list inside the folder
 
 
 def move_file(init_folder, dest_folder, file_name):
