@@ -1,5 +1,6 @@
 import csv
 import json
+import tkinter as tk
 
 folder_dict = {}
 
@@ -49,8 +50,6 @@ def group_folders(folders):
             folder_names.append(max_folder_name)
     return folder_names
 
-# create a folder with a given name
-
 
 def create_folder(folder_name):
     global folder_dict
@@ -69,4 +68,27 @@ def move_file(init_folder, dest_folder, file_name):
         folder_dict[dest_folder].append(file_name)
 
 
+def popup():
+    print("hi")
+
+
 print(parse("names.csv"))
+m = tk.Tk()
+scrollbar = tk.Scrollbar(m)
+scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+folder_list = tk.Listbox(m, selectmod=tk.SINGLE,
+                         width=32, yscrollcommand=scrollbar.set)
+for folder_name in folder_dict:
+    folder_list.insert(tk.END, folder_name)
+    for file_name in folder_dict[folder_name]:
+        folder_list.insert(tk.END, "\t> " + file_name)
+folder_list.pack(side=tk.LEFT, fill=tk.BOTH)
+scrollbar.config(command=folder_list.yview)
+mb = tk.Menubutton(m, text="Options")
+mb.pack()
+mb.menu = tk.Menu(mb, tearoff=0)
+mb["menu"] = mb.menu
+mb.menu.add_command(label="Create New Folder", command=popup)
+mb.menu.add_command(label="Move Selected File", command=popup)
+mb.pack()
+m.mainloop()
