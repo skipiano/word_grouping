@@ -83,10 +83,6 @@ def move_file(init_folder, dest_folder, file_name):
         folder_dict[dest_folder].append(file_name)
 
 
-def popup():
-    print("hi")
-
-
 class createFolderWindow(object):
     def __init__(self, master):
         w = self.top = tk.Toplevel(master)
@@ -155,7 +151,6 @@ class mainWindow(object):
 
     def move_file(self):
         selected = self.folder_list.curselection()
-        print(selected)
         if not selected:
             return
         index = 0
@@ -163,13 +158,10 @@ class mainWindow(object):
         file_name1 = ""
         is_file = False
         global folder_dict
-        print(folder_dict)
         for folder_name in folder_dict:
             if index == selected[0]:
-                print("folder not a file")
                 break
             index += 1
-            print(index)
             for file_name in folder_dict[folder_name]:
                 if index == selected[0]:
                     is_file = True
@@ -177,7 +169,6 @@ class mainWindow(object):
                     file_name1 = file_name
                     break
                 index += 1
-                print(index)
             if is_file:
                 break
         if is_file:
