@@ -52,3 +52,22 @@ def group_folders(folders):
         else:
             folder_names.append(max_folder_name)
     return folder_names
+
+# create a folder with a given name
+
+
+def create_folder(folder_name):
+    global folder_dict
+    if folder_name in folder_dict:
+        print("A folder with that name already exists: please try a different name.")
+    else:
+        folder_dict[folder_name] = []
+
+
+def move_file(init_folder, dest_folder, file_name):
+    global folder_dict
+    if not dest_folder in folder_dict:
+        print("A folder with that name does not exist: please select the correct folder or create a new folder.")
+    else:
+        folder_dict[init_folder].remove(file_name)
+        folder_dict[dest_folder].append(file_name)
